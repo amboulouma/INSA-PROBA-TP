@@ -25,6 +25,7 @@ source('LoiNormale.R')
 source('LoiUniforme.R')
 source('FileMM1.R')
 source('Runs.R')
+source('FileMM1Plot.R')
 set.seed(215,kind="Mersenne-Twister")
 ```
 
@@ -430,7 +431,7 @@ PlotNormale(10,2)
 
 ## Question 8
 
-```{r}
+```{r, eval=FALSE}
 FileMM1 <- function(lambda, mu, D)
 {
   arrivee <- c()
@@ -449,9 +450,9 @@ FileMM1 <- function(lambda, mu, D)
     depart <- c(depart, arrivee[1] + rexp(1, mu))
     for (i in 2:length(arrivee))
     {
-      if (arrivee[i] > depart [i-1]) # Quand le client i arrive, le client i-1 est déjà parti
+      if (arrivee[i] > depart [i-1]) 
         time = arrivee[i] + rexp(1, mu)
-      else # Quand le client i arrive, il attend le départ de i-1
+      else 
         time = depart[i-1] + rexp(1, mu)
       
       if (time < D)
@@ -466,4 +467,41 @@ FileMM1 <- function(lambda, mu, D)
 
 ```
 
+## Question 9
+
+```{r, eval=FALSE}
+plotClients <- function(lambda, mu, D)
+{
+  liste <- FileMM1(lambda, mu, D)
+  arrivee <- liste[[1]]
+  depart <- liste[[2]]
+  nbClients <- 0
+  res <- rep(0,100) # nbClient a un instant t
+  temps <- 0
+  while(temps < D)
+  {
+    nbClients <- 0
+    for (i in 1:length(depart))
+    {
+      if (temps > arrivee[i] && temps < depart[i])
+      {
+        nbClients <- nbClients + 1
+      }
+    }
+    for (i in length(depart):length(arrivee))
+    {
+      if (temps > arrivee[i])
+      {
+        nbClients <- nbClients + 1
+      }
+    }
+    temps <- temps + 0.1
+    res[temps*10] <- nbClients
+  }
+  plot(res, type="s")
+}
+```
+```{r}
+plotClients(8,20,10)
+```
 
