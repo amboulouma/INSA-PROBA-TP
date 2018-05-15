@@ -1,10 +1,14 @@
 ---
-title: "Compte Rendu"
-author: "Amine Boulouma / ClÃ©ment Florant"
+title: "Compte Rendu TP Probabilités"
+author: "Amine Boulouma / Clément Florant"
 date: "15 mai 2018"
 output:
-  html_document: default
-  pdf_document: default
+  html_document: 
+    toc: true
+    theme: united
+  pdf_document: 
+    toc: true
+    theme: united
 ---
 
 ```{r setup, include=FALSE}
@@ -19,11 +23,24 @@ source('Frequency.R')
 source('LoiBinomiale.R')
 source('LoiNormale.R')
 source('LoiUniforme.R')
+source('FileMM1.R')
 source('Runs.R')
 set.seed(215,kind="Mersenne-Twister")
 ```
 
-# Compte Rendu TP ProbabilitÃ©s
+# Introduction
+
+Les objectifs de ce TP sont les suivants :
+
+* Faire passer des tests statistiques à des générateurs pseudo-aléatoires (via trois tests de qualité de séquences) afin de comparer la qualité des séquences produites. Vous aurez à programmer vous-même deux générateurs simples.
+
+* Transformer la distribution uniforme sur [0, 1] en une distribution plus complexe.
+
+* Appliquer l'une de ces méthodes pour modéliser un problème classique de file d'attente.
+
+* Etudier la validité de résultats théoriques sur des simulations, dans le cadre d'une file d'attente
+
+# Tests de générateurs pseudo-aléatoires
 
 ## Question 1
 
@@ -66,7 +83,7 @@ testRANDU(k=10, graine=215)
 ```
 ### Standard Minimal
 
-ImplÃ©mentation de l'algorithme Standard Minimal
+Implémentation de l'algorithme Standard Minimal
 
 ```{r eval=FALSE}
 StandardMinimal <- function(graine)
@@ -78,7 +95,7 @@ StandardMinimal <- function(graine)
   return (S)
 }
 ```
-GÃ©nÃ©ration de k valeurs avec Standard Minimal
+Génération de k valeurs avec Standard Minimal
 
 ```{r eval=FALSE}
 testStandardMinimal <- function(k, graine)
@@ -95,7 +112,7 @@ testStandardMinimal <- function(k, graine)
 }
 ```
 
-Affichage de 10 valeurs gÃ©nÃ©rÃ©es par Standard Minimal pour une graine de 215
+Affichage de 10 valeurs générées par Standard Minimal pour une graine de 215
 
 ```{r}
 testStandardMinimal(k=10, graine=215)
@@ -103,51 +120,51 @@ testStandardMinimal(k=10, graine=215)
 
 ## Question 2.1
 
-Remarque gÃ©nÃ©rale : Dans tous les diagrammes, on remarque que la derniÃ¨re sÃ©rie de valeurs apparait moins que les autres, tout simplement car cette plage de valeurs est moins large que les autres (Largeur normale : 2.0e08, largeur derniÃ¨re plage : 5.25e07). Ces valeurs ont donc logiquement moins de chances d'apparaÃ®tre.
+Remarque générale : Dans tous les diagrammes, on remarque que la derniÃ¨re série de valeurs apparait moins que les autres, tout simplement car cette plage de valeurs est moins large que les autres (Largeur normale : 2.0e08, largeur derniÃ¨re plage : 5.25e07). Ces valeurs ont donc logiquement moins de chances d'apparaÃ®tre.
 
 ### RANDU
 
-Histogramme de 1000 valeurs gÃ©nÃ©rÃ©es par RANDU avec une graine de 215
+Histogramme de 1000 valeurs générées par RANDU avec une graine de 215
 
 ```{r}
 hist(testRANDU(1000, 215))
 ```
 
-On remarque que la rÃ©partition des valeurs est plutÃ´t Ã©quilibrÃ©e sauf pour la deuxiÃ¨me plage de valeurs qui n'apparaissent que 60 fois environ. Cela ne nous permet pas de conclure mais on peut supposer qu'il y a un possible dÃ©sequilibre dans la rÃ©partition des valeurs.
+On remarque que la répartition des valeurs est plutÃ´t équilibrée sauf pour la deuxiÃ¨me plage de valeurs qui n'apparaissent que 60 fois environ. Cela ne nous permet pas de conclure mais on peut supposer qu'il y a un possible désequilibre dans la répartition des valeurs.
 
 ### Standard Minimal
 
-Histogramme de 1000 valeurs gÃ©nÃ©rÃ©es par Standard Minimal avec une graine de 215
+Histogramme de 1000 valeurs générées par Standard Minimal avec une graine de 215
 
 ```{r}
 hist(testStandardMinimal(1000, 215))
 ```
 
-La rÃ©partition des valeurs est Ã©qulibrÃ©e et ne traduit pas de problÃ¨me particulier.
+La répartition des valeurs est équlibrée et ne traduit pas de problÃ¨me particulier.
 
 ### Mersenne-Twister
 
-Histogramme de 1000 valeurs gÃ©nÃ©rÃ©es par Mersenne-Twister avec une graine de 215
+Histogramme de 1000 valeurs générées par Mersenne-Twister avec une graine de 215
 
 ```{r}
 hist((MersenneTwister(1000, 1, 215))$x)
 ```
 
-La rÃ©partition des valeurs est Ã©qulibrÃ©e et ne traduit pas de problÃ¨me particulier.
+La répartition des valeurs est équlibrée et ne traduit pas de problÃ¨me particulier.
 
 ### Sobol
 
-Histogramme de 1000 valeurs gÃ©nÃ©rÃ©es par Sobol
+Histogramme de 1000 valeurs générées par Sobol
 
 ```{r}
 hist(Sobol(1000, 1))
 ```
 
-La rÃ©partition des valeurs est parfaitement Ã©quilibrÃ©e et semble mÃªme "trop" rÃ©guliÃ¨re.
+La répartition des valeurs est parfaitement équilibrée et semble mÃªme "trop" réguliÃ¨re.
 
 ## Question 2.2
 
-Affichage de la valeur obtenue en fonction de la valeur prÃ©cÃ©dente
+Affichage de la valeur obtenue en fonction de la valeur précédente
 
 ### RANDU
 
@@ -185,9 +202,9 @@ plot(u[1:(n-1)], u[2:n])
 
 ### Commentaires
 
-Pour les trois premiers algorithmes, il n'y a pas de remarque particuliÃ¨re si ce n'est que les valeurs consÃ©cutives semblent indÃ©pendantes contrairement Ã  la suite de Sobol oÃ¹ l'on observe une corrÃ©lation entre les valeurs obtenues. Il semble que celle-ci ne soit pas adaptÃ©e pour gÃ©nÃ©rer des valeurs imprÃ©visibles.
+Pour les trois premiers algorithmes, il n'y a pas de remarque particuliÃ¨re si ce n'est que les valeurs consécutives semblent indépendantes contrairement Ã  la suite de Sobol oÃ¹ l'on observe une corrélation entre les valeurs obtenues. Il semble que celle-ci ne soit pas adaptée pour générer des valeurs imprévisibles.
 
-## Question 3 : Test de FrÃ©quence Monobit
+## Question 3 : Test de Fréquence Monobit
 
 ### RANDU
 
@@ -348,6 +365,7 @@ u <- Sobol(n, p)
 return (order.test(u, d=4, echo=FALSE)$p.value)
 ```
 
+# Simulations de lois de probabilités quelconques
 ## Question 6
 
 ```{r eval=FALSE}
@@ -407,6 +425,8 @@ PlotNormale <- function(m,s,precision=1000)
 ```{r}
 PlotNormale(10,2)
 ```
+
+# Application aux files d'attentes
 
 ## Question 8
 
