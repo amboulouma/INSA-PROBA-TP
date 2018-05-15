@@ -29,7 +29,7 @@ set.seed(215,kind="Mersenne-Twister")
 
 ### RANDU
 
-ImplÃ©mentation de l'algorithme RANDU
+Implémentation de l'algorithme RANDU
 
 ```{r eval=FALSE}
 RANDU <- function(graine)
@@ -42,7 +42,7 @@ RANDU <- function(graine)
 }
 ```
 
-GÃ©nÃ©ration de k valeurs avec RANDU
+Génération de k valeurs avec RANDU
 
 ```{r eval=FALSE}
 testRANDU <- function(k, graine)
@@ -59,7 +59,7 @@ testRANDU <- function(k, graine)
 }
 ```
 
-Affichage de 10 valeurs gÃ©nÃ©rÃ©es par RANDU pour une graine de 215
+Affichage de 10 valeurs générées par RANDU pour une graine de 215
 
 ```{r}
 testRANDU(k=10, graine=215)
@@ -407,3 +407,43 @@ PlotNormale <- function(m,s,precision=1000)
 ```{r}
 PlotNormale(10,2)
 ```
+
+## Question 8
+
+```{r}
+FileMM1 <- function(lambda, mu, D)
+{
+  arrivee <- c()
+  depart <- c()
+  
+   time <- rexp(1, lambda)
+  
+  while (time < D)
+  {
+    arrivee <- c(arrivee, time)
+    time <- time + rexp(1, lambda)
+  }
+  
+  if (length(arrivee) > 0)
+  {
+    depart <- c(depart, arrivee[1] + rexp(1, mu))
+    for (i in 2:length(arrivee))
+    {
+      if (arrivee[i] > depart [i-1]) # Quand le client i arrive, le client i-1 est déjà parti
+        time = arrivee[i] + rexp(1, mu)
+      else # Quand le client i arrive, il attend le départ de i-1
+        time = depart[i-1] + rexp(1, mu)
+      
+      if (time < D)
+        depart[i] = time
+      else
+        break
+    }
+    
+  }
+  return(list(arrivee,depart))
+}
+
+```
+
+
